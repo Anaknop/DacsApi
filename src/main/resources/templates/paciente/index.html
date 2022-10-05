@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+      
+    <head th:include="layout :: htmlhead"></head>
+
+    <body>
+        <nav th:replace="layout :: menu">(menu)</nav>
+
+        <div class="container">
+            <h1 class="text-center">Paciente</h1>
+            
+            <table class="table" id="pacientes">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>NOME</th>
+                        <th>SEXO</th>
+                        <th>DATA NASCIMENTO</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="paciente : ${listaPacientes}">
+                        <td th:text="${paciente.id}"></td>
+                        <td th:text="${paciente.nome}"></td>
+                        <td th:text="${paciente.sexo}"></td>
+                        <td th:text="${paciente.dataNascimento}"></td>
+                        <td class="d-flex">
+                            <a th:href="@{'/paciente/alterar/'+${paciente.id}}"
+                            class="btn btn-primary">Alterar</a>
+                            
+                            <button class="btn btn-danger js-delete" 
+                                    th:data-id="${paciente.id}" >Excluir</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="botao-direita">
+                <a th:href="@{/paciente/novo}" class="btn btn-primary">Adicionar</a>
+            </div>
+        </div>
+        
+        <div th:include="layout :: footer">(footer)</div>
+        <script type="text/javascript">
+            $(document).ready(function(){
+                $("#pacientes").on('click','.js-delete', function(){
+                    let button = $(this);
+                    bootbox.confirm("Confirma a exclusão \
+                        do registro?",function(result){
+                            if(result){
+                                $.ajax({
+                                    url: '/paciente/delete/' + button.attr('data-id'),
+                                    method: 'GET',
+                                    success : function(){
+                                        window.location.href = '/paciente/';
+                                    }
+                                });
+
+                            }
+                    });
+                });
+            });
+        </script>
+    </body>
+</html>

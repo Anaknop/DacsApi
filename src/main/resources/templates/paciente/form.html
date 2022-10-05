@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+      
+    <head th:include="layout :: htmlhead"></head>
+
+    <body>
+        <nav th:replace="layout :: menu">(menu)</nav>
+
+        <div class="container">
+            <h1>Paciente</h1>
+            <form th:action="@{/paciente/(form)}" 
+                  th:object="${paciente}" method="POST">
+
+                <input type="hidden" th:field="*{id}">
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-6">
+                            <label for="txtnome">Nome:</label>
+                            <input class="form-control" 
+                                th:field="*{nome}" 
+                                type="text" id="txtnome">
+                            <p th:if="${#fields.hasErrors('nome')}" 
+                                th:errors="*{nome}"
+                                class="alert alert-danger"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <label for="txtsexo">Sexo:</label>
+                            <input class="form-control" 
+                                th:field="*{sexo}" 
+                                placeholder="Masculino/Feminino"
+                                type="text" id="txtsexo">
+                            <p th:if="${#fields.hasErrors('sexo')}" 
+                                th:errors="*{sexo}"
+                                class="alert alert-danger"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <label for="txtdatanascimento">Data Nascimento:</label>
+                            <input class="form-control"
+                                th:field="*{dataNascimento}"  
+                                type="date" id="txtdatanascimento">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Cidade:</label>
+                        <select th:field="*{cidadeId}"
+                            class="form-select">
+                            <option
+                                th:each="cidade : ${listaCidades}"
+                                th:value="${cidade.id}"
+                                th:text="${cidade.nome}"></option>
+                            
+                        </select>
+                        <p th:if="${#fields.hasErrors('cidade')}" 
+                                th:errors="*{cidade}"
+                                class="alert alert-danger"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Plano de Saude:</label>
+                        <select th:field="*{planoId}"
+                            class="form-select">
+                            <option
+                                th:each="umPlano : ${listaPlanos}"
+                                th:value="${umPlano.id}"
+                                th:text="${umPlano.nome}"></option>
+                            
+                        </select>
+                        <button type="submit" name="incplano" class="btn btn-primary">Incluir Plano</button>
+                    </div>
+                    <div class="form-group">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="umPlano, stat : *{listaPlanos}">
+                                    <td th:text="${umPlano.nome}"></td>
+                                    <input type="hidden" th:field="*{listaPlanos[__${stat.index}__].id}"/>
+                                    <input type="hidden" th:field="*{listaPlanos[__${stat.index}__].nome}"/>
+                                    <td>
+                                        <button type="submit" name="removeitem" th:value="__${stat.index}__" class="btn btn-primary">Remover</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+                <button type="submit" name="save" class="btn btn-primary">Enviar</button>
+            </form>
+        </div>
+        
+        <div th:include="layout :: footer">(footer)</div>
+    </body>
+</html>
